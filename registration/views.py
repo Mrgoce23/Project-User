@@ -280,7 +280,12 @@ class VerifyEmailView(generics.GenericAPIView):
         except jwt.ExpiredSignatureError:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'], options={"verify_signature": False})
             user = User.objects.get(id=payload['user_id'])
-            user.delete()
+            
+            if user.is_verified:
+                return Response({'token': 'Already used!'})
+            
+            else:
+                user.delete()
             raise AuthenticationFailed('Activation Expired!')
 
         except jwt.exceptions.DecodeError:
