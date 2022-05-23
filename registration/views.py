@@ -282,11 +282,11 @@ class VerifyEmailView(generics.GenericAPIView):
             user = User.objects.get(id=payload['user_id'])
             
             if user.is_verified:
-                return Response({'token': 'Already used!'})
+                return Response({'token': 'Already used, you can safely delete this email.'})
             
             else:
                 user.delete()
-            raise AuthenticationFailed('Activation Expired!')
+            raise AuthenticationFailed('Activation Expired!, Register again to receive another token.')
 
         except jwt.exceptions.DecodeError:
             raise AuthenticationFailed('Invalid Token')
